@@ -1,4 +1,5 @@
 from PIL import Image
+from random import*
 
 hid = Image.open('rohan.png')
 hider = Image.open('blue.png')
@@ -155,11 +156,48 @@ def finalpic(uncoded):
         (r,g,b)= uncd.getpixel((w,0))
         if (r,g,b) != (0,0,0):
             picwidth.append((r))
-    print len(picwidth)
     for h in range(height2):
         (r,g,b)= uncd.getpixel((0,h))
-        if (r,g,b) != (0,0,0):
+        if (r,g,b) != (0,0,0) and (r,g,b) != (255,255,255):
             piclength.append((r))
-    print len(piclength)
- 
-    
+    hlen = len(piclength)
+    wlen = len(picwidth)
+    final = Image.new("RGB",(wlen,hlen))
+    for w in range(wlen):
+        for h in range(hlen):
+            (r,g,b)= uncd.getpixel((w,h))
+            final.putpixel((w,h),(r,g,b))
+    final.show()
+
+
+def scrambler(tohide):
+    hide = Image.open(tohide)
+    (width,height) = hide.size
+    alphabet = ['f']               
+    a = choice(alphabet)
+    b = choice(alphabet)
+    c = choice(alphabet)
+    d = choice(alphabet)
+
+    a = rotate(a,b)
+    c = rotate(c,d)
+    for w in range(width):
+        for h in height:
+            (r,g,b)= hide.getpixel(w,h)
+            (r,g,b) = (r,g,b)&0xab
+            print 0xab
+def encipher(S,n) :
+   '''Returns code for Caesar shift by n of S'''
+   if len(S) == 0:
+        return ''
+   else :
+        return rotate(S[0],n) + encipher(S[1:], n)
+
+def rotate(c,n) :
+   '''Shifts the character c by n'''
+   if ord(c)>64 and ord(c)<91:
+        return chr((((ord(c)-ord('A'))+ord(n))%26)+ord('A'))
+   elif ord(c)>90 and ord(c)<123:
+        return chr((((ord(c)-ord('a'))+ord(n))%26)+ord('a'))
+   else: 
+        return c
