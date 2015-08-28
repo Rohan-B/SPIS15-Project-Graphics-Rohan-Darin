@@ -21,6 +21,8 @@ def embedD(toHide,toDo):
     width2 = hider.size[0]
     height2 = hider.size[1]
 
+    hid = scrambler(toHide)
+
     for bigw in range(width2):
         for bigh in range(height2):
             #sets last two bits of the picture to be hidden to zero
@@ -50,6 +52,7 @@ def embedhighres(toHide,toDo):
     #embeds picture, when debeded it becomes a full picture 
     hid = Image.open(toHide)
     hider = Image.open(toDo)
+    
     width1 = hid.size[0]
     height1 = hid.size[1]
 
@@ -96,12 +99,14 @@ def embedhighres(toHide,toDo):
     hider.save('hidden2.png')
 
 
-def debed(uncode):
+def debed(uncode,key):
     #decodes the degraded version of the hidden picture
     hider2 = Image.open(uncode)
     (width2,height2) = hider2.size
     revealed = Image.new("RGB",(width2,height2),'white')
-
+    a = int(key[0:2])
+##    b1 = int(key[2:4])
+    
     for w in range(width2):
         for h in range(height2):
             #shifts last two bits to become the fisrt of the extracted 8 bits
@@ -109,7 +114,17 @@ def debed(uncode):
             r = (r <<5)&0xFF
             g = (g <<5)&0xFF
             b = (b <<5)&0xFF
+            ##
+            r = r |a
+            g= g |a
+            b = b |a
+            #
+##            r = r |~b1
+##            g= g |~b1
+##            b = b|~b1
+##            
             revealed.putpixel((w,h),(r,g,b))
+     
     revealed.show()
 
 
@@ -144,8 +159,8 @@ def debed2(uncode):
         for h in range(0,height2/2):
             revealed.putpixel((w,h),colors[x])
             x = x+1
-    revealed.show()
     revealed.save('prefinal.png')
+    finalpic('prefinal.png')
 
 def finalpic(uncoded):
     uncd = Image.open(uncoded)
@@ -174,30 +189,25 @@ def scrambler(tohide):
     hide = Image.open(tohide)
     (width,height) = hide.size
     alphabet = ['f']               
-    a = choice(alphabet)
-    b = choice(alphabet)
-    c = choice(alphabet)
-    d = choice(alphabet)
-
-    a = rotate(a,b)
-    c = rotate(c,d)
+    a = randint(10,99)
+    b1 = randint(10,99)
+    c = randint(10,99)
+    d = randint(10,99)
     for w in range(width):
-        for h in height:
-            (r,g,b)= hide.getpixel(w,h)
-            (r,g,b) = (r,g,b)&0xab
-            print 0xab
-def encipher(S,n) :
-   '''Returns code for Caesar shift by n of S'''
-   if len(S) == 0:
-        return ''
-   else :
-        return rotate(S[0],n) + encipher(S[1:], n)
-
-def rotate(c,n) :
-   '''Shifts the character c by n'''
-   if ord(c)>64 and ord(c)<91:
-        return chr((((ord(c)-ord('A'))+ord(n))%26)+ord('A'))
-   elif ord(c)>90 and ord(c)<123:
-        return chr((((ord(c)-ord('a'))+ord(n))%26)+ord('a'))
-   else: 
-        return c
+        for h in range(height):
+            (r,g,b)= hide.getpixel((w,h))
+            r = r & a
+            g= g & a
+            b = b & a
+            #
+##            r = r | b1
+##            g= g | b1
+##            b = b | b1
+            
+            hide.putpixel((w,h),(r,g,b))
+    print a
+    print b1
+    hide.show()
+    code = str(a) + str(b1)
+    print code
+    return hide
