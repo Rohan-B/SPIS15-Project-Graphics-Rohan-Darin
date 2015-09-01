@@ -4,28 +4,25 @@
 <style>
 body    {background-color:black}
 
-h1	{color:lime}
-h1	{font-family:"Lucida Console", Monaco, monospace}
-h1	{font-size:x-large}
+h1	{
+	color:lime;
+	font-family:"Lucida Console", Monaco, monospace;
+	font-size:x-large;
+	}
 
-h3	{color:lime}
-h3	{font-family:"Lucida Console", Monaco, monospace}
-h3	{font-size:large}
-
-p    	{color:lime}
-p	{font-family:"Lucida Console", Monaco, monospace}
-p	{font-size:large}
-
-a    	{color:lime}
-a	{font-family:"Lucida Console", Monaco, monospace}
-a	{font-size:large}
+h3	{
+	color:lime;
+	{font-family:"Lucida Console", Monaco, monospace;
+	font-size:large
+	}
 
 form 	{ 
 	background: transparent;
-	display inline-block
+	display inline-block;
 	}
 
-textarea 	{
+textarea 	
+	{
 	background:transparent;
 	color: lime;
 	border: 0;
@@ -33,7 +30,15 @@ textarea 	{
 	font-size:medium;
 	width: 500px;
 	padding: 5px;
-	display: block	
+	display: block;
+	}
+
+input	{
+	background: transparent;
+	color: lime;
+	border: 0;
+	font-family:"Lucida Console", Monaco, monospace;
+	font-size:medium;
 	}
 
 </style>
@@ -43,8 +48,15 @@ textarea 	{
 <br>
 
 <form action="action_page.php">
-<h3>Input Message:<h3>
-<textarea type="text" name="message" placeholder="Enter your message here" onkeypress="submit" rows = 50 cols = 500></textarea>
+<form method="post" action="file-upload-1.htm" name="submit" enctype="multipart/form-data">
+	<h3>Choose a Picture to Hide Your Message</h3>
+	<input type="file" name="fileField"><br /><br />
+	<br>
+	<br>
+	<h3>Input Message:<h3>
+	<textarea type="text" name="message" placeholder="Enter your message here"  rows = 35 cols = 			100> </textarea>
+<input type="submit" name="submit" value="Submit">
+
 <br><br>
 </form>
 
