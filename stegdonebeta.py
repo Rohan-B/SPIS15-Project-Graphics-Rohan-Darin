@@ -105,7 +105,8 @@ def debed(uncode,key):
     (width2,height2) = hider2.size
     revealed = Image.new("RGB",(width2,height2),'white')
     a = int(key[0:2])
-##    b1 = int(key[2:4])
+    b1 = int(key[2:4])
+    c = int(key[4:6])
     
     for w in range(width2):
         for h in range(height2):
@@ -115,14 +116,14 @@ def debed(uncode,key):
             g = (g <<5)&0xFF
             b = (b <<5)&0xFF
             ##
-            r = r |a
-            g= g |a
-            b = b |a
-            #
-##            r = r |~b1
-##            g= g |~b1
-##            b = b|~b1
-##            
+            r = r - a
+            g= g + a
+            b = b - a
+            for x in [r,g,b]:
+                if x>255:
+                    x = x - 255
+                if x<0:
+                    x = x + 255
             revealed.putpixel((w,h),(r,g,b))
      
     revealed.show()
@@ -196,18 +197,17 @@ def scrambler(tohide):
     for w in range(width):
         for h in range(height):
             (r,g,b)= hide.getpixel((w,h))
-            r = r & a
-            g= g & a
-            b = b & a
-            #
-##            r = r | b1
-##            g= g | b1
-##            b = b | b1
-            
+            r = r + a
+            g= g - b1
+            b = b + c
+            for x in [r,g,b]:
+                if x>255:
+                    x = x - 255
+                if x<0:
+                    x = x + 255
             hide.putpixel((w,h),(r,g,b))
-    print a
-    print b1
+    
     hide.show()
-    code = str(a) + str(b1)
+    code = str(a) + str(b1) + str(c)
     print code
     return hide
