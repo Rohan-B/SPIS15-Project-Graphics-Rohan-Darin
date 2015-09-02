@@ -7,6 +7,8 @@ from flask import session
 from PIL import Image, ImageDraw
 import tempfile
 
+app = Flask(__name__)
+
 # Route that will process the file upload
 @app.route('/uploadboth', methods=['POST'])
 def uploadboth():
