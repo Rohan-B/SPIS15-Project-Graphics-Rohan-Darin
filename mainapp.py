@@ -9,6 +9,7 @@ import tempfile
 
 app = Flask(__name__)
 
+
 # Route that will process the file upload
 @app.route('/uploadboth', methods=['POST'])
 def uploadboth():
@@ -134,4 +135,4 @@ def encodeMessagePage():
     return render_template('websiteEncodeMessage.html')
     
 if __name__=="__main__":
-    app.run(debug=True,host="0.0.0.0",port=54321)
+    app.run(debug=False,host="0.0.0.0",port=54321)
