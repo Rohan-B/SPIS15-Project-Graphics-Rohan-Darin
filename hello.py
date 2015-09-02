@@ -3,6 +3,64 @@ from PIL import Image
 
 app = Flask(__name__)
 
+
+def check_file(file):
+    # Check if the file is one of the allowed types/extensions
+    if not allowed_file(file.filename):
+        print "Block 1"
+        message = "Sorry. Only files that end with one of these "
+        message += "extensions is permitted: " 
+        message += str(app.config['ALLOWED_EXTENSIONS'])
+        message += "<a href='" + url_for("index") + "'>Try again</a>"
+        return message
+    elif not file:
+        print "block 2"
+        message = "Sorry. There was an error with that file.<br>"
+        message += "<a href='" + url_for("index") + "'>Try again</a>"
+        return message
+    return ''
+
+# For a given file, return whether it's an allowed type or not
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
+# Route that will process the file upload
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Get the name of the uploaded file
+    file = request.files['file']
+    result = check_file(file)
+    if result != '':
+        print "result was not blank, result =", result
+        return result
+    else:
+        print "result was blank"
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(file.filename)
+
+        fullFilename = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        session['file'] = fullFilename
+        print "session['file'] =" ,session['file']
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(fullFilename)
+        # Redirect the user to the uploaded_file route, which
+        # will basicaly show on the browser the uploaded file
+        session["filter"]=request.form['filters']
+        newImage = processimage(session["filter"])
+        return render_template('applyfilter.html', newImage = fixupfilename(newImage))
+
+# This route is expecting a parameter containing the name
+# of a file. Then it will locate that file on the upload
+# directory and show it on the browser, so if the user uploads
+# an image, that image is going to be show after the upload
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
+
 @app.route('/')
 def mainPage():
     return render_template('websiteHome.html')
