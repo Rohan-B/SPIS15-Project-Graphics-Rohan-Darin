@@ -130,4 +130,6 @@ def mainPage():
 @app.route('/encodemessage')
 def encodeMessagePage():
     return render_template('websiteEncodeMessage.html')
-
+    
+if __name__=="__main__":
+    app.run(debug=False,host="0.0.0.0",port=54321)
