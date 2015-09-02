@@ -22,9 +22,9 @@ def uploadboth():
     else:
         print "result was blank"
         # Make the filename safe, remove unsupported chars
-        filename1 = secure_filename(file.filename)
+        filename = secure_filename(file.filename)
 
-        fullFilename1 = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        fullFilename = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
         session['file'] = fullFilename
         print "session['file'] =" ,session['file']
         # Move the file form the temporal folder to
@@ -49,7 +49,7 @@ def uploadboth():
         file2.save(fullFilename2)
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
-    session["encodedimage"] = embedhighres(session['file1'], session['file2'])
+    session["encodedimage"] = embedhighres(session['file'], session['file2'])
     return render_template('websiteOutput1.html', filename = fixFileName(session['encodedimage']))
 
 def fixFileName(badfilename):
