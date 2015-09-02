@@ -2,6 +2,30 @@ from flask import Flask, url_for, render_template, request
 from PIL import Image
 
 app = Flask(__name__)
+# This is the path to the upload directory
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif', 'bmp'])
+def check_file(file):
+    # Check if the file is one of the allowed types/extensions
+    if not allowed_file(file1.filename):
+        print "Block 1"
+        message = "Sorry. Only files that end with one of these "
+        message += "extensions is permitted: " 
+        message += str(app.config['ALLOWED_EXTENSIONS'])
+        message += "<a href='" + url_for("index") + "'>Try again</a>"
+        return message
+    elif not file:
+        print "block 2"
+        message = "Sorry. There was an error with that file.<br>"
+        message += "<a href='" + url_for("index") + "'>Try again</a>"
+        return message
+    return ''
+
+# For a given file, return whether it's an allowed type or not
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 # Route that will process the file upload
@@ -10,7 +34,7 @@ def uploadboth():
     # Get the name of the uploaded file
     file1 = request.files['file1']
     result1 = check_file(file1)
-    if result != '':
+    if result1 != '':
         print "result was not blank, result =", result1
         return result1
     else:
@@ -29,7 +53,7 @@ def uploadboth():
     # Get the name of the uploaded file
     file2 = request.files['file2']
     result2 = check_file(file2)
-    if result != '':
+    if result2 != '':
         print "result was not blank, result =", result2
         return result2
     else:
