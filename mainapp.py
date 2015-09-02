@@ -16,20 +16,20 @@ app.secret_key='rohandarinsecretkeyisthebest234568dskfd24525sdf';
 @app.route('/uploadboth', methods=['POST'])
 def uploadboth():
     # Get the name of the uploaded file
-    file1 = request.files['file1']
-    if file1 == '5':
+    file = request.files['file1']
+    if file == '5':
         pass
     else:
         print "result was blank"
         # Make the filename safe, remove unsupported chars
-        filename1 = secure_filename(file1.filename)
+        filename1 = secure_filename(file.filename)
 
-        fullFilename1 = (os.path.join(app.config['UPLOAD_FOLDER'], filename1))
-        session['file1'] = fullFilename1
-        print "session['file1'] =" ,session['file1']
+        fullFilename1 = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        session['file'] = fullFilename
+        print "session['file'] =" ,session['file']
         # Move the file form the temporal folder to
         # the upload folder we setup
-        file1.save(fullFilename1)
+        file.save(fullFilename)
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
     # Get the name of the uploaded file
