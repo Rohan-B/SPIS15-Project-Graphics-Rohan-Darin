@@ -69,7 +69,7 @@ def uploadboth():
         file2.save(fullFilename2)
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
-    session["encodedimage"] = hideSecretMessage(session['file1'], session['file2'])
+    session["encodedimage"] = embedhighres(session['file1'], session['file2'])
     return render_template('websiteOutput1.html', filename = fixFileName(session['encodedimage']))
 
 
