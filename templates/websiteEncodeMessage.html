@@ -47,10 +47,10 @@ input	{
 <h1 align="center">Encoding a Message</h1>
 <br>
 
-<form action="encodemessagepython">
-<form method="post" name="hider" enctype="multipart/form-data">
+<form action="{{ url_for("upload") }}">
+<form method="post" name="file" enctype="multipart/form-data">
 	<h3>Choose a Picture to Hide Your Message</h3>
-	<input type="file" name="fileField"><br /><br />
+	<input type="file" name="file"><br /><br />
 	<br>
 	<br>
 	<h3>Input Message:<h3>
