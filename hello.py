@@ -13,7 +13,9 @@ def encodeMessagePage():
 
 @app.route('/encodemessagepython')
 def encodeMessageCode():
+    hider = request.files['hider']
     hider = Image.open(picture)
+    hider.show()
     width1 = hider.size[0]
     height1 = hider.size[1]
 
