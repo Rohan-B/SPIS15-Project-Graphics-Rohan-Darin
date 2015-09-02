@@ -12,7 +12,7 @@ def encodeMessagePage():
     return render_template('websiteEncodeMessage.html')
 
 @app.route('/encodemessagepython')
-def encodeMessagePage():
+def encodeMessageCode():
     hider = Image.open(picture)
     width1 = hider.size[0]
     height1 = hider.size[1]
