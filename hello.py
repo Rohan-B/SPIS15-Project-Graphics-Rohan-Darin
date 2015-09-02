@@ -49,7 +49,7 @@ def upload():
         # will basicaly show on the browser the uploaded file
         session["filter"]=request.form['filters']
         newImage = processimage(session["filter"])
-        return render_template('applyfilter.html', newImage = fixupfilename(newImage))
+        return render_template('websiteOutput1.html', newImage = fixupfilename(newImage))
 
 # This route is expecting a parameter containing the name
 # of a file. Then it will locate that file on the upload
@@ -58,8 +58,12 @@ def upload():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
+
+def getTempFileName(myPrefix):
+    f = tempfile.NamedTemporaryFile(suffix = ".jpg", prefix = myPrefix, delete=False, dir=app.config['UPLOAD_FOLDER'])
+    f.close()
+    return f.name
 
 @app.route('/')
 def mainPage():
