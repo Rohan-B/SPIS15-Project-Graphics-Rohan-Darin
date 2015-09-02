@@ -9,7 +9,7 @@ import tempfile
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/uploadedimg'
+app.config['UPLOAD_FOLDER'] = '/uploadedimg'
 
 # Route that will process the file upload
 @app.route('/uploadboth', methods=['POST'])
