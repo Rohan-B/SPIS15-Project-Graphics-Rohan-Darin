@@ -7,9 +7,10 @@ app = Flask(__name__)
 def mainPage():
     return render_template('websiteHome.html')
 
-@app.route('/encodemessage')
+@app.route('/encodemessagepython')
 def encodeMessagePage():
-    return render_template('websiteEncodeMessage.html')
+    print 'helloworld'
+    #return render_template('websiteEncodeMessage.html')
 
 @app.route('/hidepicture')
 def hidePicturePage():
