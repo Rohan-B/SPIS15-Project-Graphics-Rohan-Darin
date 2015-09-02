@@ -3,7 +3,10 @@ from PIL import Image
 
 app = Flask(__name__)
 
-
+# This is the path to the upload directory
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif', 'bmp'])
 def check_file(file):
     # Check if the file is one of the allowed types/extensions
     if not allowed_file(file.filename):
