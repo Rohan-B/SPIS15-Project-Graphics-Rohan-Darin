@@ -10,6 +10,7 @@ import tempfile
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = '/uploadedimg'
+app.secret_key='rohandarinsecretkeyisthebest234568dskfd24525sdf';
 
 # Route that will process the file upload
 @app.route('/uploadboth', methods=['POST'])
