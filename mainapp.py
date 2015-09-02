@@ -15,7 +15,7 @@ app = Flask(__name__)
 def uploadboth():
     # Get the name of the uploaded file
     file1 = request.files['file1']
-    if file1 != '':
+    if file1 == '5':
         pass
     else:
         print "result was blank"
@@ -32,7 +32,7 @@ def uploadboth():
         # will basicaly show on the browser the uploaded file
     # Get the name of the uploaded file
     file2 = request.files['file2']
-    if file2 != '':
+    if file2 == '5':
         pass
     else:
         print "result was blank"
