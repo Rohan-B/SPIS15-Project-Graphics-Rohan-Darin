@@ -50,7 +50,9 @@ def uploadboth():
         file2.save(fullFilename2)
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
+    print 6109
     session["encodedimage"] = embedhighres(session['file'], session['file2'])
+    print 2930
     return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
 
 def fixFileName(badfilename):
