@@ -59,6 +59,7 @@ def uploadboth():
 
 @app.route('/uploadtext', methods=['POST'])
 def gettextimg():
+    print 56
     file = request.files['file1']
     if file == '5':
         pass
