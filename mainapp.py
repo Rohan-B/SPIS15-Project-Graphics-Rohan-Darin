@@ -6,7 +6,6 @@ from flask import jsonify
 from flask import session
 from PIL import Image, ImageDraw
 import tempfile
-import cgi 
 
 app = Flask(__name__)
 
@@ -59,18 +58,18 @@ def uploadboth():
     #return render_template('websiteOutput1.html')
     return send_file(filename, mimetype ='image/bmp')
 
-@app.route('/small', methods=['GET'])
+@app.route('/converted/*', methods=['GET'])
 def getsmallimage():
      return send_file('small.jpg', mimetype='image/jpg')
      
 @app.route('/uploadtext', methods=['POST'])
 def gettextimg():
     print 56
-    file = request.files['file1']
+    file = request.files['file']
     if file == '5':
         pass
     else:
-        print "result was blank"
+        print "test"
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(file.filename)
 
@@ -83,11 +82,48 @@ def gettextimg():
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
     # Get the name of the uploaded file
-    form = cgi.FieldStorage()
-    string = form.getvalue('message')
-    print string
-    session["encodedimage"] = embed_message(session['file'], string)
-    return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
+    session['string'] = request.form['message']
+    print session['string'] 
+    session["encodedimage"] = embed_message(session['file'], session['string'])
+    print session['encodedimage']
+    filename = fixFileName(session["encodedimage"])
+    return send_file(filename, mimetype ='image/bmp')
+
+@app.route('/decodetext',methods=['POST'])
+def decodetext():
+	print 56
+	file = request.files['file']
+	print "test"
+	filename = secure_filename(file.filename)
+	fullFilename = (os.path.join(app.config['UPLOAD_FOLDER'],filename))
+	session['file'] = fullFilename
+        print "session['file'] =" ,session['file']
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(fullFilename)
+        # Redirect the user to the uploaded_file route, which
+        # will basicaly show on the browser the uploaded file
+    # Get the name of the uploaded file
+	return render_template('websiteOutput1.html',message = debed_message(session['file']))
+	
+@app.route('/decodeimage',methods=['POST'])
+def decodeimage():
+	print 56
+	file = request.files['file']
+	print "test"
+	filename = secure_filename(file.filename)
+	fullFilename = (os.path.join(app.config['UPLOAD_FOLDER'],filename))
+	session['file'] = fullFilename
+        print "session['file'] =" ,session['file']
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(fullFilename)
+        # Redirect the user to the uploaded_file route, which
+        # will basicaly show on the browser the uploaded file
+    # Get the name of the uploaded file
+	session['decodedimage'] = debed2(session['file'])
+        filename = fixFileName(session["encodedimage"])
+        return send_file(filename, mimetype ='text/plain')
 
 def fixFileName(badfilename):
     goodfilename = app.config['UPLOAD_FOLDER'] + os.path.basename(badfilename)
@@ -99,6 +135,11 @@ def fixFileName(badfilename):
 # an image, that image is going to be show after the upload
 def getTempFileName(myPrefix):
     f = tempfile.NamedTemporaryFile(suffix = ".bmp", prefix = myPrefix, delete=False, dir=app.config['UPLOAD_FOLDER'])
+    f.close()
+    return f.name
+
+def getTemptext(myPrefix):
+    f = tempfile.NamedTemporaryFile(suffix = ".txt", prefix = myPrefix, delete=False, dir=app.config['UPLOAD_FOLDER'])
     f.close()
     return f.name
     
@@ -206,8 +247,97 @@ def embed_message(picture,string):
                 (bigR,bigG,bigB)=hider.getpixel((bigw,bigh))
                 bigR = bigR | y
                 hider.putpixel((bigw,bigh),(bigR,bigG,bigB))
-    return hider
-                
+    name = getTempFileName("encodedimage")
+    hider.save(name)
+    return name
+
+def debed_message(picture):
+    hider = Image.open(picture)
+    width1 = hider.size[0]
+    height1 = hider.size[1]
+    shortnums = []
+    string_output  = ''
+    for bigw in range(width1):
+        for bigh in range(height1):
+            (r,g,b)=hider.getpixel((bigw,bigh))
+            r = r & 0x03
+            shortnums.append(r)
+    for r in range(0,len(shortnums),4):
+        x1 = shortnums[r]
+        x2 = shortnums[r+1]
+        x3 = shortnums[r+2]
+        x4 = shortnums[r+3]
+        x1 = x1 << 6
+        x2 = x2 << 4
+        x3 = x3 << 2
+        final = x1+x2+x3+x4
+        if x1+x2+x3+x4 != 0:
+            final = chr(final)
+            string_output = string_output + final
+    return string_output
+
+def debed2(uncode):
+    hider2 = Image.open(uncode)
+    (width2,height2) = hider2.size
+    revealed = Image.new("RGB",(width2,height2),'white')
+    colors = []
+    print 1
+    for w in range(0,width2):
+        for h in range(0,height2,2):
+            (r,g,b)=hider2.getpixel((w,h))
+            r = (r <<6)&0xFF
+            g = (g <<6)&0xFF
+            b = (b <<6)&0xFF
+            #print('r:',bin(r))
+            (r2,g2,b2)=hider2.getpixel((w,h+1))
+            r2 = (r2 <<6)&0xFF
+            g2 = (g2 <<6)&0xFF
+            b2 = (b2 <<6)&0xFF
+
+            r2 = r2 >> 2
+            g2 = g2 >> 2
+            b2 = b2 >> 2
+            #print('r2:',bin(r2))
+            rf = r + r2
+            gf = g + g2
+            bf = b + b2
+            #print('rf:',bin(rf))
+            colors.append((rf,gf,bf))
+    x = 0
+    print 5
+    for w in range(0,width2):
+        for h in range(0,height2/2):
+            revealed.putpixel((w,h),colors[x])
+            x = x+1
+    print 6
+    name = getTempFileName("debed")
+    hider2.save('final')
+    print 7
+    return 'final'
+
+def finalpic(uncoded):
+    uncd = Image.open(uncoded)
+    (width2,height2) = uncd.size
+    picwidth = []
+    piclength = []
+    for w in range(width2):
+        (r,g,b)= uncd.getpixel((w,0))
+        if (r,g,b) != (0,0,0):
+            picwidth.append((r))
+    for h in range(height2):
+        (r,g,b)= uncd.getpixel((0,h))
+        if (r,g,b) != (0,0,0) and (r,g,b) != (255,255,255):
+            piclength.append((r))
+    hlen = len(piclength)
+    wlen = len(picwidth)
+    final = Image.new("RGB",(wlen,hlen))
+    for w in range(wlen):
+        for h in range(hlen):
+            (r,g,b)= uncd.getpixel((w,h))
+            final.putpixel((w,h),(r,g,b))
+    name = getTempFileName("encodedimage")
+    final.save(name)
+    return name
 
 @app.route('/hidepicture')
 def hidePicturePage():
@@ -230,4 +360,4 @@ def encodeMessagePage():
     return render_template('websiteEncodeMessage.html')
     
 if __name__=="__main__":
-    app.run(debug=True,host="0.0.0.0",port=54321)
+    app.run(debug=False,host="0.0.0.0",port=54321)

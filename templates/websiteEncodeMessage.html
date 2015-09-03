@@ -47,16 +47,18 @@ input	{
 <h1 align="center">Encoding a Message</h1>
 <br>
 
-<form method="post" name="file" enctype="multipart/form-data" action="/uploadtext">
+<form method="post" name="submit" enctype="multipart/form-data" action="/uploadtext">
 	<h3>Choose a Picture to Hide Your Message</h3>
 	<input type="file" name="file"><br /><br />
 	<br>
 	<br>
 	<h3>Input Message:<h3>
-	<textarea type="text" name="message" placeholder="Enter your message here"  rows = 35 cols = 100> </textarea>
-<input type="submit" name="submit" value="Submit">
+	<input type="text" name="message" placeholder="Enter your message here"  rows = 35 cols = 100>
+	<input type="submit" name="submit" value="Submit">
 
 <br><br>
 </form>
 
 
+</body>
+</html>
