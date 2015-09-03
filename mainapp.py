@@ -146,7 +146,7 @@ def embedhighres(toHide,toDo):
     hider.save(name)
     return name
 
-def embed_message(string, picture):
+def embed_message(picture,string):
     hider = Image.open(picture)
     width1 = hider.size[0]
     height1 = hider.size[1]
