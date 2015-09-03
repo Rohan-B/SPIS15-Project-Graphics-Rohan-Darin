@@ -6,6 +6,7 @@ from flask import jsonify
 from flask import session
 from PIL import Image, ImageDraw
 import tempfile
+import cgi 
 
 app = Flask(__name__)
 
@@ -53,6 +54,32 @@ def uploadboth():
     print 6109
     session["encodedimage"] = embedhighres(session['file'], session['file2'])
     print 2930
+    session["encodedimage"].show()
+    return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
+
+@app.route('/uploadtext', methods=['POST'])
+def gettextimg():
+    file = request.files['file1']
+    if file == '5':
+        pass
+    else:
+        print "result was blank"
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(file.filename)
+
+        fullFilename = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        session['file'] = fullFilename
+        print "session['file'] =" ,session['file']
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        file.save(fullFilename)
+        # Redirect the user to the uploaded_file route, which
+        # will basicaly show on the browser the uploaded file
+    # Get the name of the uploaded file
+    form = cgi.FieldStorage()
+    string = form.getvalue('message')
+    print string
+    session["encodedimage"] = embed_message(session['file'], string)
     return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
 
 def fixFileName(badfilename):
@@ -118,6 +145,62 @@ def embedhighres(toHide,toDo):
     name = getTempFileName("encodedimage")
     hider.save(name)
     return name
+
+def embed_message(string, picture):
+    hider = Image.open(picture)
+    width1 = hider.size[0]
+    height1 = hider.size[1]
+
+    for bigw in range(width1):
+        for bigh in range(height1):
+            (bigR,bigG,bigB)=hider.getpixel((bigw,bigh))
+            bigR = (bigR >> 2)<<2
+            bigG = (bigG >> 2)<<2
+            bigB = (bigB >> 2)<<2
+            hider.putpixel((bigw,bigh),(bigR,bigG,bigB))
+    nums = []
+    for c in string:
+        x = ord(c)
+        nums.append(x)
+    fnums = []
+    for y in nums:
+        y1 = bin(y)
+        y1 = y1[2:]
+        for b in range(8-len(y1)):
+            y1 = '0' + y1
+        fnums.append(y1)
+    shortnums = []
+    for x in fnums:
+        x1 = x[0:2]
+        x2 = x[2:4]
+        x3 = x[4:6]
+        x4 = x[6:8]
+        #print x1,x2,x3,x4
+        shortnums.append(x1)
+        shortnums.append(x2)
+        shortnums.append(x3)
+        shortnums.append(x4)
+    count = 0
+    for bigw in range(width1):
+        for bigh in range(height1):
+            if count >= len(shortnums):
+                pass
+            else:
+                count = count +1
+                x1 = int(shortnums[bigh])
+                if x1 == 11:
+                    y = 3
+                if x1 == 10:
+                    y = 2
+                if x1 == 0:
+                    y = 0
+                if x1 == 1:
+                    y = 1
+                (bigR,bigG,bigB)=hider.getpixel((bigw,bigh))
+                bigR = bigR | y
+                hider.putpixel((bigw,bigh),(bigR,bigG,bigB))
+    return hider
+                
 
 @app.route('/hidepicture')
 def hidePicturePage():
