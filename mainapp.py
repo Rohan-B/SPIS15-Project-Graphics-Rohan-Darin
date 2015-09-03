@@ -56,7 +56,7 @@ def uploadboth():
     print 2930
     filename = fixFileName(session["encodedimage"])
     print filename
-    return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
+    return render_template('websiteOutput1.html')
 
 @app.route('/uploadtext', methods=['POST'])
 def gettextimg():
