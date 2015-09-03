@@ -17,6 +17,12 @@ h3	{
 	font-size:large;
 	}
 
+h4	{
+	color:lime;
+	font-family:"Lucida Console", Monaco, monospace;
+	font-size:large;
+	}
+
 a    	{
 	color:lime;
 	font-family:"Lucida Console", Monaco, monospace;
@@ -45,13 +51,17 @@ input	{
 
 
 <form method="post" action="/uploadboth" name="submit" enctype="multipart/form-data">
-	<h3>Choose a File to Hide</h3>
+	<h3>Choose an Image to Hide</h3>
 	<input type="file" name="file1"><br /><br />
-	<h3>Choose a File To Hide it In</h3>
+	<h3>Choose an Image To Hide it In</h3>
 	<input type="file" name="file2"><br /><br />
 	<br>
 	<br>
 <input type="submit" name="submit" value="Submit">
+<br>
+<br>
+<br>
+<h4>Warning: Make sure the hidden image is at least twice as small as the image you hide it in</h4>
 </form>
 <br>
 
