@@ -56,8 +56,8 @@ def uploadboth():
     print 2930
     filename = fixFileName(session["encodedimage"])
     print filename
-    return render_template('websiteOutput1.html')
-    print 'did it work' 
+    #return render_template('websiteOutput1.html')
+    return send_file(filename, mimetype ='image/bmp')
 
 @app.route('/small', methods=['GET'])
 def getsmallimage():
@@ -90,7 +90,7 @@ def gettextimg():
     return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
 
 def fixFileName(badfilename):
-    goodfilename = "/" + app.config['UPLOAD_FOLDER'] + os.path.basename(badfilename)
+    goodfilename = app.config['UPLOAD_FOLDER'] + os.path.basename(badfilename)
     return goodfilename
     
 # This route is expecting a parameter containing the name
