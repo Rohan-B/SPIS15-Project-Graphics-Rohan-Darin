@@ -55,6 +55,8 @@ def uploadboth():
     session["encodedimage"] = embedhighres(session['file'], session['file2'])
     print 2930
     session["encodedimage"].show()
+    filename = fixFileName(session["encodedimage"])
+    print filename
     return render_template('websiteOutput1.html', filename = fixFileName(session["encodedimage"]))
 
 @app.route('/uploadtext', methods=['POST'])
