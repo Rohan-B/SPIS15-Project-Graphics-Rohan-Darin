@@ -51,16 +51,19 @@ def uploadboth():
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
     print 6109
-    session["encodedimage"] = embedhighres(session['file'], session['file2'])
-    print 2930
-    filename = fixFileName(session["encodedimage"])
-    print filename
-    #return render_template('websiteOutput1.html')
-    return send_file(filename, mimetype ='image/bmp')
+   # session["encodedimage"] = embedhighres(session['file'], session['file2'])
+    #print 2930
+    filename= embedhighres(session['file'], session['file2'])
+    filename = os.path.basename(filename)
+    #print filename
 
-@app.route('/converted/*', methods=['GET'])
-def getsmallimage():
-     return send_file('small.jpg', mimetype='image/jpg')
+    return render_template('websiteOutput2.html', filename=filename )
+
+@app.route('/converted/<filename>', methods=['GET'])
+def getconvertedimage(filename):
+     print filename
+     print fixFileName(filename)
+     return send_file(fixFileName(filename), mimetype='image/png')
      
 @app.route('/uploadtext', methods=['POST'])
 def gettextimg():
@@ -84,10 +87,11 @@ def gettextimg():
     # Get the name of the uploaded file
     session['string'] = request.form['message']
     print session['string'] 
-    session["encodedimage"] = embed_message(session['file'], session['string'])
-    print session['encodedimage']
-    filename = fixFileName(session["encodedimage"])
-    return send_file(filename, mimetype ='image/bmp')
+    filename= embed_message(session['file'], session['string'])
+    filename = os.path.basename(filename)
+    #print filename
+
+    return render_template('websiteOutput3.html', filename=filename )
 
 @app.route('/decodetext',methods=['POST'])
 def decodetext():
@@ -117,16 +121,22 @@ def decodeimage():
         print "session['file'] =" ,session['file']
         # Move the file form the temporal folder to
         # the upload folder we setup
-        file.save(fullFilename)
+        file.save(fullFilename) 
+	print 2454
         # Redirect the user to the uploaded_file route, which
         # will basicaly show on the browser the uploaded file
     # Get the name of the uploaded file
-	session['decodedimage'] = debed2(session['file'])
-        filename = fixFileName(session["encodedimage"])
-        return send_file(filename, mimetype ='text/plain')
+        print session['file']
+	decodedimage = debed2(session['file'])
+	print decodedimage
+	finalimage = finalpic(decodedimage)
+        f = fixFileName(finalimage)
+        return send_file(f, mimetype ='image/png')
 
 def fixFileName(badfilename):
+    print 'badfilename =', badfilename 
     goodfilename = app.config['UPLOAD_FOLDER'] + os.path.basename(badfilename)
+    print 'goodfilename=',goodfilename
     return goodfilename
     
 # This route is expecting a parameter containing the name
@@ -134,7 +144,7 @@ def fixFileName(badfilename):
 # directory and show it on the browser, so if the user uploads
 # an image, that image is going to be show after the upload
 def getTempFileName(myPrefix):
-    f = tempfile.NamedTemporaryFile(suffix = ".bmp", prefix = myPrefix, delete=False, dir=app.config['UPLOAD_FOLDER'])
+    f = tempfile.NamedTemporaryFile(suffix = ".png", prefix = myPrefix, delete=False, dir=app.config['UPLOAD_FOLDER'])
     f.close()
     return f.name
 
@@ -277,7 +287,9 @@ def debed_message(picture):
     return string_output
 
 def debed2(uncode):
+    print 213134
     hider2 = Image.open(uncode)
+    print 564
     (width2,height2) = hider2.size
     revealed = Image.new("RGB",(width2,height2),'white')
     colors = []
@@ -309,11 +321,9 @@ def debed2(uncode):
         for h in range(0,height2/2):
             revealed.putpixel((w,h),colors[x])
             x = x+1
-    print 6
     name = getTempFileName("debed")
-    hider2.save('final')
-    print 7
-    return 'final'
+    revealed.save(name)
+    return name
 
 def finalpic(uncoded):
     uncd = Image.open(uncoded)
@@ -335,7 +345,7 @@ def finalpic(uncoded):
         for h in range(hlen):
             (r,g,b)= uncd.getpixel((w,h))
             final.putpixel((w,h),(r,g,b))
-    name = getTempFileName("encodedimage")
+    name = getTempFileName("debed")
     final.save(name)
     return name
 
