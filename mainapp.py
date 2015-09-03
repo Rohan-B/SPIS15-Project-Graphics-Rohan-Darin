@@ -59,6 +59,10 @@ def uploadboth():
     return render_template('websiteOutput1.html')
     print 'did it work' 
 
+@app.route('/small', methods=['GET'])
+def getsmallimage():
+     return send_file('small.jpg', mimetype='image/jpg')
+     
 @app.route('/uploadtext', methods=['POST'])
 def gettextimg():
     print 56
